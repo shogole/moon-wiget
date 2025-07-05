@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Moon Phase Widget</title>
+<style>
+  body{
+    margin:0;
+    padding:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background:#111;
+    color:#fff;
+    font-family:Arial, Helvetica, sans-serif;
+  }
+  #contain_moon{text-align:center;}
+</style>
+</head>
+<body>
+<div id="contain_moon">
+  <div style="font-weight:bold">Moon Age</div>
+  <div id="moon_svg" style="margin:-7px 0 -15px;filter:drop-shadow(0 0 30px hsl(200,100%,42%));height:100px;"></div>
+  <div id="moon_np"></div>
+  <div id="next_full" style="font-size:small"></div>
+</div>
+<script>
+(function(){
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const url = \`https://www.icalendar37.net/lunar/api/?lang=en&month=\${month}&year=\${year}&size=100&lightColor=rgb(245,245,245)&shadeColor=rgb(17,17,17)&LDZ=\${Date.UTC(year, month-1, 1)/1000}\`;
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+        const phase = data.phase[day];
+        document.getElementById("moon_svg").innerHTML = phase.svg;
+        document.getElementById("moon_np").textContent = phase.npWidget;
+        document.getElementById("next_full").innerHTML = "Next full moon<br>" + data.nextFullMoon;
+    })
+    .catch(console.error);
+})();
+</script>
+</body>
+</html>
